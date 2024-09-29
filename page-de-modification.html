@@ -1,0 +1,70 @@
+<!-- page-de-modification.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier les informations de Windu</title>
+    <style>
+        /* ton CSS ici */
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Modifier les informations de Windu</h2>
+        <form id="editForm">
+            <label for="weight">Poids de Windu :</label>
+            <input type="text" id="weight" name="weight" placeholder="Poids en kg">
+
+            <label for="phone">Téléphone :</label>
+            <input type="tel" id="phone" name="phone" placeholder="Numéro de téléphone">
+
+            <label for="address">Adresse :</label>
+            <textarea id="address" name="address" rows="3" placeholder="Nouvelle adresse"></textarea>
+
+            <label for="color">Couleur du pelage :</label>
+            <input type="text" id="color" name="color" placeholder="Ex: Blanc-Beige">
+
+            <label for="friendly-children">Gentil avec les enfants :</label>
+            <input type="text" id="friendly-children" name="friendly-children" placeholder="Oui / Non">
+
+            <label for="friendly-dogs">Gentil avec les chiens :</label>
+            <input type="text" id="friendly-dogs" name="friendly-dogs" placeholder="Oui / Non">
+
+            <label for="friendly-cats">Gentil avec les chats :</label>
+            <input type="text" id="friendly-cats" name="friendly-cats" placeholder="Oui / Non">
+
+            <button type="submit">Enregistrer</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('editForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const data = {
+                weight: document.getElementById('weight').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                color: document.getElementById('color').value,
+                friendly: {
+                    children: document.getElementById('friendly-children').value,
+                    dogs: document.getElementById('friendly-dogs').value,
+                    cats: document.getElementById('friendly-cats').value
+                }
+            };
+
+            fetch('windu-data.json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => response.json())
+            .then(result => {
+                alert('Données mises à jour !');
+            }).catch(error => console.error('Erreur lors de la mise à jour :', error));
+        });
+    </script>
+</body>
+</html>

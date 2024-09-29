@@ -1,0 +1,12 @@
+{
+    "weight": "4,5 kg",
+    "phone": "+32476783070",
+    "sms": "+32476783070",
+    "address": "Rue du triangle, 10, Mouscron, Belgique",
+    "color": "Blanc-Beige",
+    "friendly": {
+        "children": "Oui",
+        "dogs": "Oui, joueur",
+        "cats": "Oui, joueur"
+    }
+}
