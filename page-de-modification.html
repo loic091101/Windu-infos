@@ -74,10 +74,10 @@
 
         <form id="modification-form">
             <label for="pelage">Couleur du pelage :</label>
-            <input type="text" id="pelage" name="pelage">
+            <input type="text" id="pelage" name="pelage" maxlength="15">
 
             <label for="poids">Poids (kg) :</label>
-            <input type="text" id="poids" name="poids">
+            <input type="text" id="poids" name="poids" maxlength="5">
 
             <label for="telephone">Téléphone :</label>
             <select id="prefixe" name="prefixe">
@@ -88,16 +88,16 @@
             <input type="text" id="numero" name="numero">
 
             <label for="adresse">Adresse :</label>
-            <input type="text" id="adresse" name="adresse" placeholder="Numéro, Rue, Code postal, Ville, Pays">
+            <input type="text" id="adresse" name="adresse" placeholder="Numéro Rue, Code postal, Ville, Pays">
 
             <label for="enfants">Gentil avec les enfants :</label>
-            <input type="text" id="enfants" name="enfants">
+            <input type="text" id="enfants" name="enfants" maxlength="15">
 
             <label for="chiens">Gentil avec les chiens :</label>
-            <input type="text" id="chiens" name="chiens">
+            <input type="text" id="chiens" name="chiens" maxlength="15">
 
             <label for="chats">Gentil avec les chats :</label>
-            <input type="text" id="chats" name="chats">
+            <input type="text" id="chats" name="chats" maxlength="15">
 
             <button type="submit">Sauvegarder</button>
         </form>
@@ -112,6 +112,7 @@
 
             // Réinitialiser les messages d'erreur
             document.getElementById('error').textContent = '';
+            document.getElementById('message').textContent = ''; // Réinitialiser le message de succès
 
             // Récupérer les valeurs du formulaire
             const nouveauPelage = document.getElementById('pelage').value;
@@ -120,12 +121,25 @@
             let numero = document.getElementById('numero').value;
             const nouvelleAdresse = document.getElementById('adresse').value;
 
-            // Vérification de l'adresse pour s'assurer qu'elle respecte le format requis
-            const adresseRegex = /^(?=.*\d)(\d+\s.+\s\d{4}\s\w+\s\w+|\w+\s\d+\s\d{4}\s\w+\s\w+)$/; // Vérifie un numéro suivi d'une rue ou une rue suivie d'un numéro, d'un code postal, d'une ville et d'un pays
+            let validationError = false;
 
-            if (!adresseRegex.test(nouvelleAdresse)) {
-                document.getElementById('error').textContent = 'Veuillez entrer une adresse valide.';
-                return; // Stopper la soumission si l'adresse est invalide
+            // Vérification de l'adresse pour s'assurer qu'elle respecte le format requis
+            if (nouvelleAdresse.trim() !== '') {
+                const adresseRegex = /^(?=.*\d)(\d+\s.+\s\d{4}\s\w+\s\w+|\w+\s\d+\s\d{4}\s\w+\s\w+)$/; // Vérifie un numéro suivi d'une rue ou une rue suivie d'un numéro, d'un code postal, d'une ville et d'un pays
+
+                if (!adresseRegex.test(nouvelleAdresse)) {
+                    validationError = true;
+                    document.getElementById('error').textContent = 'Veuillez entrer une adresse valide.';
+                }
+            }
+
+            // Vérification du poids (2 chiffres avant et 2 chiffres après la virgule)
+            if (nouveauPoids.trim() !== '') {
+                const poidsRegex = /^\d{1,2}(\.\d{1,2})?$/;
+                if (!poidsRegex.test(nouveauPoids)) {
+                    validationError = true;
+                    document.getElementById('error').textContent = 'Veuillez entrer un poids valide (format: 00.00).';
+                }
             }
 
             // Supprimer le premier 0 s'il existe dans le numéro saisi
@@ -134,23 +148,26 @@
             }
 
             // Validation du numéro de téléphone (nombre de chiffres approprié selon le pays)
-            const phoneRegex = {
-                '+32': /^\d{8,9}$/,  // Belgique : 8-9 chiffres sans le préfixe
-                '+33': /^\d{9}$/,    // France : 9 chiffres sans le préfixe
-                '+49': /^\d{10}$/    // Allemagne : 10 chiffres sans le préfixe
-            };
+            if (numero.trim() !== '') {
+                const phoneRegex = {
+                    '+32': /^\d{8,9}$/,  // Belgique : 8-9 chiffres sans le préfixe
+                    '+33': /^\d{9}$/,    // France : 9 chiffres sans le préfixe
+                    '+49': /^\d{10}$/    // Allemagne : 10 chiffres sans le préfixe
+                };
 
-            if (!phoneRegex[prefixe].test(numero)) {
-                document.getElementById('error').textContent = 'Veuillez entrer un numéro de téléphone valide pour le pays sélectionné.';
-                return; // Stopper la soumission si le numéro est invalide
+                if (!phoneRegex[prefixe].test(numero)) {
+                    validationError = true;
+                    document.getElementById('error').textContent = 'Veuillez entrer un numéro de téléphone valide pour le pays sélectionné.';
+                }
             }
 
-            // Afficher un message de confirmation
-            document.getElementById('message').textContent = 'Les informations ont été sauvegardées avec succès.';
+            // Si aucune erreur n'a été détectée, afficher un message de confirmation
+            if (!validationError) {
+                document.getElementById('message').textContent = 'Les informations ont été sauvegardées avec succès.';
+            }
         });
     </script>
 
 </body>
 </html>
-
 
