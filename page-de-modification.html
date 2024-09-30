@@ -1,70 +1,155 @@
-<!-- page-de-modification.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier les informations de Windu</title>
+    <title>Modifier le Profil de Windu</title>
     <style>
-        /* ton CSS ici */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .modification-container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 350px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 16px;
+            color: #333;
+            text-align: left;
+            display: block;
+            margin-bottom: 8px;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            font-size: 14px;
+            color: #555;
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>Modifier les informations de Windu</h2>
-        <form id="editForm">
-            <label for="weight">Poids de Windu :</label>
-            <input type="text" id="weight" name="weight" placeholder="Poids en kg">
 
-            <label for="phone">Téléphone :</label>
-            <input type="tel" id="phone" name="phone" placeholder="Numéro de téléphone">
+    <div class="modification-container">
+        <h1>Modifier les Informations</h1>
 
-            <label for="address">Adresse :</label>
-            <textarea id="address" name="address" rows="3" placeholder="Nouvelle adresse"></textarea>
+        <form id="modification-form">
+            <label for="pelage">Couleur du pelage :</label>
+            <input type="text" id="pelage" name="pelage">
 
-            <label for="color">Couleur du pelage :</label>
-            <input type="text" id="color" name="color" placeholder="Ex: Blanc-Beige">
+            <label for="poids">Poids (kg) :</label>
+            <input type="text" id="poids" name="poids">
 
-            <label for="friendly-children">Gentil avec les enfants :</label>
-            <input type="text" id="friendly-children" name="friendly-children" placeholder="Oui / Non">
+            <label for="telephone">Téléphone :</label>
+            <select id="prefixe" name="prefixe">
+                <option value="+32">+32 (Belgique)</option>
+                <option value="+33">+33 (France)</option>
+                <option value="+49">+49 (Allemagne)</option>
+            </select>
+            <input type="text" id="numero" name="numero" placeholder="Numéro sans préfixe">
 
-            <label for="friendly-dogs">Gentil avec les chiens :</label>
-            <input type="text" id="friendly-dogs" name="friendly-dogs" placeholder="Oui / Non">
+            <label for="adresse">Adresse :</label>
+            <input type="text" id="adresse" name="adresse" placeholder="Rue, Ville, Code Postal">
 
-            <label for="friendly-cats">Gentil avec les chats :</label>
-            <input type="text" id="friendly-cats" name="friendly-cats" placeholder="Oui / Non">
+            <label for="enfants">Gentil avec les enfants :</label>
+            <input type="text" id="enfants" name="enfants">
 
-            <button type="submit">Enregistrer</button>
+            <label for="chiens">Gentil avec les chiens :</label>
+            <input type="text" id="chiens" name="chiens">
+
+            <label for="chats">Gentil avec les chats :</label>
+            <input type="text" id="chats" name="chats">
+
+            <button type="submit">Sauvegarder</button>
         </form>
+
+        <div class="message" id="message"></div>
+        <div class="error" id="error"></div>
     </div>
 
     <script>
-        document.getElementById('editForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+        document.getElementById('modification-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Empêche l'envoi normal du formulaire
 
-            const data = {
-                weight: document.getElementById('weight').value,
-                phone: document.getElementById('phone').value,
-                address: document.getElementById('address').value,
-                color: document.getElementById('color').value,
-                friendly: {
-                    children: document.getElementById('friendly-children').value,
-                    dogs: document.getElementById('friendly-dogs').value,
-                    cats: document.getElementById('friendly-cats').value
-                }
+            // Réinitialiser les messages d'erreur
+            document.getElementById('error').textContent = '';
+
+            // Récupérer les valeurs du formulaire
+            const nouveauPelage = document.getElementById('pelage').value;
+            const nouveauPoids = document.getElementById('poids').value;
+            const prefixe = document.getElementById('prefixe').value;
+            let numero = document.getElementById('numero').value;
+            const nouvelleAdresse = document.getElementById('adresse').value;
+
+            // Supprimer le premier 0 s'il existe dans le numéro saisi
+            if (numero.startsWith('0')) {
+                numero = numero.substring(1);
+            }
+
+            // Validation du numéro de téléphone (nombre de chiffres approprié selon le pays)
+            const phoneRegex = {
+                '+32': /^\d{8,9}$/,  // Belgique : 8-9 chiffres sans le préfixe
+                '+33': /^\d{9}$/,    // France : 9 chiffres sans le préfixe
+                '+49': /^\d{10}$/    // Allemagne : 10 chiffres sans le préfixe
             };
 
-            fetch('windu-data.json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }).then(response => response.json())
-            .then(result => {
-                alert('Données mises à jour !');
-            }).catch(error => console.error('Erreur lors de la mise à jour :', error));
+            if (!phoneRegex[prefixe].test(numero)) {
+                document.getElementById('error').textContent = 'Veuillez entrer un numéro de téléphone valide pour le pays sélectionné.';
+                return; // Stopper la soumission si le numéro est invalide
+            }
+
+            // Validation de l'adresse (au minimum 5 caractères)
+            if (nouvelleAdresse.length < 5) {
+                document.getElementById('error').textContent = 'Veuillez entrer une adresse valide.';
+                return; // Stopper la soumission si l'adresse est invalide
+            }
+
+            // Ici, tu peux ajouter la logique pour envoyer les données et les sauvegarder dans le fichier JSON
+
+            // Afficher un message de confirmation
+            document.getElementById('message').textContent = 'Les informations ont été sauvegardées avec succès.';
         });
     </script>
+
 </body>
 </html>
+
