@@ -88,7 +88,7 @@
             <input type="text" id="numero" name="numero" placeholder="Numéro sans préfixe">
 
             <label for="adresse">Adresse :</label>
-            <input type="text" id="adresse" name="adresse" placeholder="Rue, Ville, Code Postal">
+            <input type="text" id="adresse" name="adresse" placeholder="Numéro Rue, Code postal, Ville, Pays">
 
             <label for="enfants">Gentil avec les enfants :</label>
             <input type="text" id="enfants" name="enfants">
@@ -120,6 +120,14 @@
             let numero = document.getElementById('numero').value;
             const nouvelleAdresse = document.getElementById('adresse').value;
 
+            // Vérification de l'adresse pour s'assurer qu'elle respecte le format requis
+            const adresseRegex = /^(?=.*\d)(\d+\s.+\s\d{4}\s\w+\s\w+|\w+\s\d+\s\d{4}\s\w+\s\w+)$/; // Vérifie un numéro suivi d'une rue ou une rue suivie d'un numéro, d'un code postal, d'une ville et d'un pays
+
+            if (!adresseRegex.test(nouvelleAdresse)) {
+                document.getElementById('error').textContent = 'Veuillez entrer une adresse valide.';
+                return; // Stopper la soumission si l'adresse est invalide
+            }
+
             // Supprimer le premier 0 s'il existe dans le numéro saisi
             if (numero.startsWith('0')) {
                 numero = numero.substring(1);
@@ -137,14 +145,6 @@
                 return; // Stopper la soumission si le numéro est invalide
             }
 
-            // Validation de l'adresse (au minimum 5 caractères)
-            if (nouvelleAdresse.length < 5) {
-                document.getElementById('error').textContent = 'Veuillez entrer une adresse valide.';
-                return; // Stopper la soumission si l'adresse est invalide
-            }
-
-            // Ici, tu peux ajouter la logique pour envoyer les données et les sauvegarder dans le fichier JSON
-
             // Afficher un message de confirmation
             document.getElementById('message').textContent = 'Les informations ont été sauvegardées avec succès.';
         });
@@ -152,4 +152,5 @@
 
 </body>
 </html>
+
 
